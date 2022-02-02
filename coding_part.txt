@@ -1,0 +1,325 @@
+# udte-_raho
+import time
+import datetime
+import calendar
+import random
+import mysql.connector as mysql
+mycon=mysql.connect(host='localhost',user='root',passwd='root',database='flight_booking')
+pointer=mycon.cursor()
+def error():
+      print('SEEMS YOU HAVE ENTERED SOMETHING WRONG ,TRY AGAIN')
+      print('ಠ_ಠ')
+def val_error():
+      print('!!!!!!!! OOOPS ...THIS IS NOT AN INTEGER')
+      print('O_O')
+def space():
+      print(' ')
+def dotted_line():
+      print('-------------------------------------------------------------------------------')
+def table(data):
+      for i in data:
+            print(i[0],'»',i[1])
+            
+def covid_guidlines():
+      print('''© We seek your kind assistance to safeguard your well-being, as well as that of your fellow passengers and our crew on board our flights, by following the guidelines set out below:
+ All customers should wear a mask and sanitize their hands before proceeding to the boarding gate.
+ Customers must wear a face mask covering their nose and mouth, throughout their journey . The mask may be removed only while eating and drinking.
+ Please maintain appropriate social distancing while boarding and de-boarding the aircraft.
+ Kindly adhere to all the announcements and other directives issued by our ground staff and/or crew at all points of time during your journey.''')
+
+print('                                    ----------------------')
+print('                                    |WELCOME TO UDTE RAHO|')
+print('                                    ----------------------')
+print('（＾－＾）')
+user_choice=int(input('''                             
+    1 . To book tickets
+    2 . Are you an admin
+    3 . For enquiry:'''))
+if user_choice==1:
+      while True:
+            try:
+                  dotted_line()
+                  dotted_line()
+                  user_name=(input('ENTER YOUR NAME HERE : ')).upper()
+                  space()
+                  pointer.execute('select * from gender')
+                  table(pointer.fetchall())
+                  gen=int(input('PLEASE SELECT YOUR GENDER : '))
+                  pointer.execute('select gen from gender where Slno=({})'.format(gen))
+                  gender=pointer.fetchall()# Upar gender ki jage hamne gen likhatha that's why error aa raha tha
+                  space()      
+                  user_age=int(input('PLEASE ENTER YOUR AGE : '))
+                  space()
+                  dotted_line()
+                  break
+            except ValueError:
+                  val_error()
+                  continue
+            except Exception:
+                  error()
+                  continue
+      while True:            
+            try:
+                  pointer.execute('select * from places_to_visit')
+                  table(pointer.fetchall())
+                  dotted_line()
+                  dep=int(input('ENTER YOUR PLACE OF DEPARTURE : '))
+                  pointer.execute('select name_of_the_cities from places_to_visit where sno=({})'.format(dep))
+                  departure=pointer.fetchall()
+                  space()
+                  arr=int(input('ENTER YOUR DESTINATION : '))
+                  pointer.execute('select name_of_the_cities from places_to_visit where sno=({})'.format(arr))
+                  arrival=pointer.fetchall()
+                  space()
+                  departure=pointer.fetchall()
+                  if arrival==departure:
+                        print("THE PLACE OF DEPARTURE AND DESTINATION CAN'T BE SAME")
+                        continue
+                        space()
+                  dotted_line()
+                  print('SO YOU ARE BOARDING FLIGHT FROM',departure,'AND YOUR DESTINATION IS',arrival)
+                  print(' ')
+                  e4=pointer.execute('select * from service_provider')
+                  table(pointer.fetchall())
+                  space()
+                  fs=int(input('PLEASE ENTER FLIGHT SERVICE : '))
+                  pointer.execute('select flight_service from service_provider where SlNo=({})'.format(fs))
+                  flight_service=pointer.fetchall()
+                  dotted_line()
+                  break
+            except ValueError:
+                  val_error()
+                  continue
+            except Exception:
+                  error()
+                  continue
+      cal_show=input('WANT TO SEE CALENDER ?? : ')
+      while cal_show=='y' or cal_show=='Y':
+            curr_date_time=datetime.datetime.now()
+            curr_year=curr_date_time.year
+            dotted_line()
+            try:
+                  month=int(input('ENTER THE MONTH : '))
+                  print(' ')
+                  current_date=curr_date_time.date()
+                  current_time=curr_date_time.time()
+                  Cal=calendar.month(curr_year,month)
+                  print(Cal)
+                  dotted_line()
+                  print("TODAY'S DATE : ",current_date)
+                  print(' ')
+                  print('CURRENT TIME : ',current_time)
+                  print(' ')
+                  print('CURRENT YEAR : ',curr_year)
+                  dotted_line()
+                  cal_show=input('WANT TO SEE CALENDER AGAIN?? : ')
+            except ValueError:
+                  val_error()
+                  continue
+            except Exception:
+                  error()
+                  continue     
+      while True:
+            try:# DATE
+                  boarding_date=str(input('Enter date in DD/MM/YY format : '))
+                  day=int(boarding_date[:2])
+                  month=int(boarding_date[3:5])
+                  year=int(boarding_date[6:])
+                  a=datetime.date(year,month,day)
+                  b=time.strftime('%d/%m/%y')
+                  d=int(b[:2])
+                  m=int(b[3:5])
+                  y=int(b[6:])
+                  v=datetime.date(y,m,d)
+                  if v>a:
+                        error()
+                        continue
+                  elif v<a:
+                        pass
+                  elif v==a:
+                        print("It's today !")
+                  break      
+            except:
+                  error()
+                  continue
+      #defining func using random module
+      dotted_line()
+      def available_flights():
+                  n=random.randint(2,6)
+                  print('HERE IS YOUR LIST OF FLIGHTS AVIALABLE')
+                  space()
+                  print('FROM',departure)
+                  print('TO',arrival)
+                  print(' ')
+                  for i in range(0,n):
+                        cost_of_booking=random.randrange(2000,7000)
+                        print(i+1,' FARE FOR THE TRIP')
+                        print( '    RS',cost_of_booking)
+                        dotted_line()
+                        print(flight_service)
+                        print(' ')
+                        dotted_line()
+      available_flights()        
+      print('')
+      while True:                  
+            try:
+                  pointer.execute('select * from mode_of_payment')
+                  table(pointer.fetchall())
+                  mop=int(input('MODE OF PAYMENT : '))
+                  pointer.execute('select card_options from mode_of_payment where slno=({})'.format(mop))
+                  mode_of_payment=pointer.fetchall()
+            except ValueError:
+                  val_error()
+                  continue
+            except Exception:
+                  error()
+                  continue
+            print('SO HERE IS YOUR TICKET')
+            # BOOKING ID
+            print(' ')
+            dotted_line()
+            print('NAME : ',user_name,'                ''AGE : ',user_age,'            ''GENDER : ',gender)
+            print('FROM : ',departure,'                         ''TO : ',arrival)
+            print('BOARDING DATE : ',boarding_date)
+            print(flight_service)
+            dotted_line()
+            covid_guidlines()
+            print(' ')
+            print('HAVE A SAFE AND HAPPY JOURNEY')
+            print(' ')
+            print('PLEASE VISIT AGAIN')
+            dotted_line()
+            print('')
+            dotted_line()
+            print('TO BOOK ANY ANOTHER TICKET')
+            n12=input('''IF YES(PRESS Y)
+                      ELSE (PRESS N) : ''')
+            if n12=='y' or n12=='Y':
+                  continue
+            elif n12=='n' or n12=='N':
+                  break
+            else:
+                  error()
+#ADMIN PART####################################################################################################################                      
+elif user_choice==2:
+      ''''Passwd=input('Enter password :')
+            if Passwd=='1234':
+            operation={1:'ADD',2:'REMOVE'}
+                        H=operation.items()
+                        table(H)
+                        work_to_do=int(input('IN WHAT WAY WE CAN HELP YOU :'))      
+                        if work_to_do==1:
+                              add()
+                        elif WYWTD==2:
+                              def remove():'''
+      table_name={1:'PLACES_TO_VISIT',2:'MODE_OF_PAYMENT',3:'SERVICE_PROVIDER'}
+      D=table_name.items()
+      table(D)
+      Adtn=int(input('IN WHICH TABLE DO YOU WANT TO ADD ?? :'))
+      tab=table_name[Adtn]
+      pointer.execute("select * from ('{}')".format(tab))
+      data=pointer.fetchall()
+      H=input('WANNA SEE THE TABLE ?? YES(Y OR y) OR NO(PRESS ANY OTHER KEY):')
+      if CH=='Y' or CH=='y':
+            table(data)
+      else:
+            pass        
+      def add():
+            if Adtn==1:
+                  '''pointer.execute('select * from places_to_visit')
+                  data=pointer.fetchall()
+                  CH=input('WANNA SEE THE TABLE ?? YES(Y OR y) OR NO(PRESS ANY OTHER KEY):')
+                  if CH=='Y' or CH=='y':
+                              table(data)
+                  else:
+                        pass '''       
+                  Cnt=pointer.rowcount
+                  NOPWTA=input('ENTER THE NAME OF THE PLACE YOU WANT TO ADD')
+                  sd=NOPWTA.upper()
+                  pointer.execute("insert into places_to_visit values({},'{}')".format(Cnt+1,sd))
+                  mycon.commit()                              
+            elif Adtn==2:
+                  '''pointer.execute('select * from MODE_OF_PAYMENT')
+                  data=pointer.fetchall()
+                  CH=input('WANNA SEE THE TABLE ?? YES(Y OR y) OR NO(PRESS ANY OTHER KEY):')
+                  if CH=='Y' or CH=='y':
+                        table(data)
+                  else:
+                        pass'''
+                  Cnt=pointer.rowcount
+                  NOMOFWTA=input('ENTER NAME OF ANY OTHER MODE OF PAYMENT YOU WANT TO ADD')
+                  sd=NOMOFWTA.upper()
+                  pointer.execute("insert into MODE_OF_PAYMENT values({},'{}')".format(Cnt+1,sd))
+            elif Adtn==3:
+                  '''pointer.execute('select * from SERVICE_PROVIDER')
+                  data=pointer.fetchall()
+                  CH=input('WANNA SEE THE TABLE ?? YES(Y OR y) OR NO(PRESS ANY OTHER KEY):')
+                  if CH=='Y' or CH=='y':
+                        table(data)
+                  else:
+                        pass'''
+                  Cnt=pointer.rowcount
+                  NOSPWTA=input('ENTER NAME OF SERVICE PROVIDER YOU WANT TO ADD')
+                  sd=NOSPWTA.upper()
+                  pointer.execute("insert into SERVICE PROVIDER values({},'{}')".format(Cnt+1,sd))
+            else:
+                  error()
+                       
+      def remove():
+            pointer.execute('select * from SERVICE_PROVIDER')
+            data=pointer.fetchall()
+            Cnt=pointer.rowcount
+            table(data)
+            if Remv==1:
+                  '''pointer.execute('select * from places_to_visit')
+                  data=pointer.fetchall()
+                  Cnt=pointer.rowcount
+                  table(data)'''
+                  rno=int(input('ENTER THE ROW NUMBER. OF THAT PLACE WHICH YOU WANT TO REMOVE'))
+                  pointer.execute("delete from places_to_visit where sno={}".format(rno))
+                  if rno>=1 and rno<=Cnt:
+                        mycon.commit()
+                  else:
+                        error()
+            elif Remv==2:
+                        pointer.execute('select * from MODE_OF_PAYMENT')
+                        data=pointer.fetchall()
+                        Cnt=pointer.rowcount
+                        table(data)
+                        rno=int(input('ENTER THE ROW NUMBER OF THAT MODE OF PAYMENT WHICH YOU WANT TO REMOVE'))
+                        pointer.execute("delete from MODE_OF_PAYMENT where slno={}".format(rno))
+                        if rno>=1 and rno<=Cnt:
+                              mycon.commit()
+                        else:
+                              error()
+            elif Remv==3:
+                  pointer.execute('select * from SERVICE_PROVIDER')
+                  data=pointer.fetchall()
+                  Cnt=pointer.rowcount
+                  table(data)
+                  rno=int(input('ENTER THE ROW NUMBER OF THAT SERVICE_PROVIDER WHICH YOU WANT TO REMOVE'))
+                  pointer.execute("delete from SERVICE_PROVIDER where SLNo={}".format(rno))
+                  if rno>=1 and rno<=Cnt:
+                        mycon.commit()
+                  else:
+                        error()
+            else:
+                  error()
+                  CHCH=input('DO YOU WANT TO ADD OR REMOVE AGAIN ?? YES(Y or y) OR NO(PRESS ANY OTHER KEY')
+                  if CHCH=='Y' or 'y':
+                        continue
+                  else:
+                        break
+                  break
+                  break       
+                  break
+            
+            else:
+                  print('ENTER CORRECT PASSWORD')
+                  continue
+            break
+elif user_choice==3:
+      print('########  WORKING UNDER PROGRESS  ######')
+else:
+      error()
+mycon.close()
